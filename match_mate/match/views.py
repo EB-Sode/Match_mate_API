@@ -12,13 +12,17 @@ class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     permission_classes = [permissions.AllowAny]
+    ordering_fields = ['name']
 
 class LeagueViewSet(viewsets.ModelViewSet):
     queryset = League.objects.all()
     serializer_class = LeagueSerializer
     permission_classes = [permissions.AllowAny]
+    ordering_fields = ['name']
+
 
 class FixtureViewSet(viewsets.ModelViewSet):
     queryset = Fixtures.objects.all()
     serializer_class = FixtureSerializer
     permission_classes = [permissions.AllowAny]
+    ordering_fields = ['date']
