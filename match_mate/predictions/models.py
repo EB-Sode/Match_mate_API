@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from match.models import Fixtures
+from match.models import MatchResult
 from django.db.models import Sum
 from accounts.models import UserStats
 
@@ -11,17 +11,12 @@ class Predictions(models.Model):
     """Stores a user's prediction for a match fixture"""
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='predictions')
-    fixture = models.ForeignKey(Fixtures, on_delete=models.CASCADE, related_name= 'predictions')
+    fixture = models.ForeignKey(MatchResult, on_delete=models.CASCADE, related_name='predictions')
     points_awarded = models.PositiveIntegerField(default=0)
-    predictedHomeScore = models.PositiveIntegerField(null=True, blank=True)
-    predictedAwayScore = models.PositiveIntegerField(null=True, blank=True)
+    predicted_home_score = models.PositiveIntegerField(null=True, blank=True)
+    predicted_away_score = models.PositiveIntegerField(null=True, blank=True)
 
-    # predicted_result = models.CharField(
-    #     max_length=10,
-    #     choices=[("home", "Home Win"), ("away", "Away Win"), ("draw", "Draw")],
-    #     null=True, blank=True
-    # )  
- 
+
     class Meta:
         unique_together = ('user', 'fixture')  # ✅ prevent duplicate predictions
 
@@ -29,28 +24,28 @@ class Predictions(models.Model):
         return f"{self.user.username} predict {self.fixture} and earn {self.points_awarded} points"
     
     def evaluate(self):
-        """Compare prediction with actual result and assign points."""
+        """Compare prediction with result and assign points."""
         #skip when match is not yet played
-        if self.fixture.actualHomeScore is None or self.fixture.actualAwayScore is None:
+        if self.fixture.actual_home_score is None or self.fixture.actual_away_score is None:
             return
 
         # scoring system
-        if (self.predictedHomeScore == self.fixture.actualHomeScore and
-            self.predictedAwayScore == self.fixture.actualAwayScore):
+        if (self.predicted_home_score == self.fixture.actual_home_score and
+            self.predicted_away_score == self.fixture.actual_away_score):
             self.points_awarded = 3  # Exact scoreline correct
 
         # Correct outcome (win/draw/lose) & goal diff
-        elif ((self.predictedHomeScore - self.predictedAwayScore) ==
-              (self.fixture.actualHomeScore - self.fixture.actualAwayScore)):
+        elif ((self.predicted_home_score - self.predicted_away_score) ==
+              (self.fixture.actual_home_score - self.fixture.actual_away_score)):
             self.points_awarded = 2 
 
-        # Just the right outcome (win/lose/draw)    
-        elif ((self.predictedHomeScore > self.predictedAwayScore and 
-               self.fixture.actualHomeScore > self.fixture.actualAwayScore) or
-              (self.predictedHomeScore < self.predictedAwayScore and 
-               self.fixture.actualHomeScore < self.fixture.actualAwayScore) or
-              (self.predictedHomeScore == self.predictedAwayScore and 
-               self.fixture.actualHomeScore == self.fixture.actualAwayScore)):
+        # Just the right outcome (win/lose/draw)
+        elif ((self.predicted_home_score > self.predicted_away_score and
+               self.fixture.actual_home_score > self.fixture.actual_away_score) or
+              (self.predicted_home_score < self.predicted_away_score and
+               self.fixture.actual_home_score < self.fixture.actual_away_score) or
+              (self.predicted_home_score == self.predicted_away_score and
+               self.fixture.actual_home_score == self.fixture.actual_away_score)):
             self.points_awarded = 1
 
         # Totally wrong

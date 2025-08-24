@@ -3,15 +3,15 @@ from .models import Predictions
 
 #PREDICTION SERIALIZER
 class PredictionSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Predictions
         fields = [
             "id",
             "user",
             "fixture",
-            "fixtures_id",
-            "predictedHomeScore",
-            "predictedAwayScore",
+            "predicted_home_score",
+            "predicted_away_score",
             "points_awarded",
         ]
     
@@ -22,8 +22,8 @@ class PredictionSerializer(serializers.ModelSerializer):
             user=validated_data["user"],
             fixture=validated_data["fixture"],
             defaults={
-                "predictedHomeScore": validated_data["predictedHomeScore"],
-                "predictedAwayScore": validated_data["predictedAwayScore"],
+                "predicted_home_score": validated_data["predicted_home_score"],
+                "predicted_away_score": validated_data["predicted_away_score"],
             },
         )
         return prediction

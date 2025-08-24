@@ -10,7 +10,7 @@ router.register(r'users', UserViewSet, basename = 'user')
 #urls here
 urlpatterns = [
     path('auth/register/', RegisterView.as_view(), name='register'),
-    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path('leaderboard/', LeaderboardView.as_view(), name='leaderboard'),
     #Include routes
