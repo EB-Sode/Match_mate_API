@@ -4,7 +4,7 @@ from rest_framework import viewsets, permissions
 from .serializer import UserSerializer, RegisterUser, LeaderboardSerializer
 from django.contrib.auth.models import User
 from .models import UserStats
-from match.permissions import IsOwnerOrReadOnly
+
 
 # Create your views here.
 class RegisterView(generics.CreateAPIView):
@@ -23,4 +23,3 @@ class LeaderboardView(generics.ListAPIView):
     '''Handles retrieval of the leaderboard'''
     queryset = UserStats.objects.all()
     serializer_class = LeaderboardSerializer
-    permission_classes = [IsOwnerOrReadOnly]

@@ -6,16 +6,8 @@ class PredictionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Predictions
-        fields = [
-            "id",
-            "user",
-            "fixture",
-            "predicted_home_score",
-            "predicted_away_score",
-            "points_awarded",
-        ]
-    
-    read_only_fields = ["points_awarded"]
+        fields = ["id", "user", "fixture", "predicted_home_score", "predicted_away_score", "points_awarded"]
+        read_only_fields = ["points_awarded", 'user']
 
     def create(self, validated_data):
         prediction, created = Predictions.objects.update_or_create(

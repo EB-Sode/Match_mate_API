@@ -37,11 +37,8 @@ def import_fixtures():
             _, created = Fixtures.objects.update_or_create(
                 homeTeam=home_team,
                 awayTeam=away_team,
-                matchDate=datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00")).date(),
+                matchDateTime=datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00")),
                 defaults={
-                    "actualHomeScore": match["score"]["fullTime"]["home"] or 0,
-                    "actualAwayScore": match["score"]["fullTime"]["away"] or 0,
-                    "league": league,
                     "status": match["status"].lower(),  # scheduled/live/finished
                 }
             )

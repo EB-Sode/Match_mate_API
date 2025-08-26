@@ -13,9 +13,13 @@ class PredictionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = PredictionSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["fixtures", "content"]  # 🔍 filter by fixtures
-    ordering_fields = ["fixtures"]
+    search_fields = ["fixture__home_team__name", "fixture__away_team__name"]  # 🔍 filter by fixtures
+    ordering_fields = ["fixture__matchdate"]
 
     def get_queryset(self):
         """Only show the logged-in user's predictions"""
         return Predictions.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        # Automatically assign logged-in user
+        serializer.save(user=self.request.user)

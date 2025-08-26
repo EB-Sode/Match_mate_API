@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from predictions.models import Predictions
+from predictions.serializers import PredictionSerializer
 from .models import Team, Fixtures, League, MatchResult
 
 #LEAGUE SERIALIZER
 class LeagueSerializer(serializers.ModelSerializer):
     class Meta:
         model = League
-        fields = ['id', 'name', 'country']
+        fields = ['id', 'name']
 
 #TEAM SERIALIZER 
 class TeamSerializer(serializers.ModelSerializer):
@@ -28,23 +28,13 @@ class FixtureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Fixtures
-        fields = [
-            'id',
-            'homeTeam', 'awayTeam',
-            'homeTeam_id', 'awayTeam_id',
-            'matchDate', 'actual_home_score', 'actual_away_score'
-        ]
+        fields = ['id', 'homeTeam', 'awayTeam', 'homeTeam_id', 'awayTeam_id', 'matchDateTime', 'status']
 
+# MATCH RESULT SERIALIZER
 class MatchResultSerializer(serializers.ModelSerializer):
+    predictions = PredictionSerializer(many=True)
+
     class Meta:
         model = MatchResult
-        fields = "__all__"
+        fields = ['id', 'fixture', 'actual_home_score', 'actual_away_score', 'predictions']
 
-    def create(self, validated_data):
-        # Save result normally
-        result = super().create(validated_data)
-
-        # After result is created → update predictions
-        for prediction in result.fixture.predictions.all():
-            prediction.evaluate()
-        return result
