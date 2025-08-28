@@ -1,3 +1,3 @@
 
-web: gunicorn match_mate.wsgi
+web: gunicorn match_mate.wsgi:application
 
