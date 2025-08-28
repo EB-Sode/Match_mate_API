@@ -21,29 +21,16 @@ class Team(models.Model):
 #Create team fixtures
 class Fixtures(models.Model):
     '''Games to be played and predicted'''
-    homeTeam = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
-    awayTeam = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
-    matchDateTime = models.DateTimeField()
+    home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
+    away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
+    match_date_time = models.DateTimeField()
     status = models.CharField(max_length=20, default="upcoming")
+    external_id = models.IntegerField(unique=True, null= True)  # Store the external API's fixture ID
+
+    class Meta:
+        ordering = ['match_date_time']
 
     def __str__(self):
-        return f"{self.homeTeam} vs {self.awayTeam} on {self.matchDateTime}"
+        return f"{self.home_team} vs {self.away_team} on {self.match_date_time}"
 
-#Store actual match results
-class MatchResult(models.Model):
-    fixture = models.OneToOneField(Fixtures, on_delete=models.CASCADE, related_name="result")
-    actual_home_score = models.IntegerField()
-    actual_away_score = models.IntegerField()
-
-    def __str__(self):
-        return f"Result: {self.fixture} → {self.actual_home_score}-{self.actual_away_score}"
-
-    def get_match_summary(self):
-        return {
-            "home_team": self.fixture.homeTeam,
-            "away_team": self.fixture.awayTeam,
-            "match_date": self.fixture.matchDateTime,
-            "actual_home_score": self.actual_home_score,
-            "actual_away_score": self.actual_away_score,
-        }
     
