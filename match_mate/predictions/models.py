@@ -6,6 +6,33 @@ from accounts.models import UserStats
 
 # Create your models here.
 
+#Store actual match results
+class MatchResult(models.Model):
+    fixture = models.OneToOneField(Fixtures, on_delete=models.CASCADE, related_name="result")
+    actual_home_score = models.IntegerField()
+    actual_away_score = models.IntegerField()
+
+    def __str__(self):
+        return f"Result: {self.fixture} → {self.actual_home_score}-{self.actual_away_score}"
+
+    # def get_match_summary(self):
+    #     return {
+    #         "home_team": self.fixture.home_team,
+    #         "away_team": self.fixture.away_team,
+    #         "match_date": self.fixture.match_date_time,
+    #         "actual_home_score": self.actual_home_score,
+    #         "actual_away_score": self.actual_away_score,
+    #         "outcome": self.get_outcome(),
+    #     }
+    
+    def get_outcome(self):
+        if self.actual_home_score > self.actual_away_score:
+            return "HOME_WIN"
+        elif self.actual_home_score < self.actual_away_score:
+            return "AWAY_WIN"
+        return "DRAW"
+    
+
 #Fixture predictions for all teams
 class Predictions(models.Model):
     """Stores a user's prediction for a match fixture"""
@@ -18,7 +45,7 @@ class Predictions(models.Model):
 
 
     class Meta:
-        unique_together = ('user', 'fixture')  # ✅ prevent duplicate predictions
+        unique_together = ('user', 'fixture')  # prevent duplicate predictions
 
     def __str__(self):
         return f"{self.user.username} predict {self.fixture} and earn {self.points_awarded} points"

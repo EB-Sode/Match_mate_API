@@ -1,12 +1,16 @@
 from django.shortcuts import render
-from .serializers import PredictionSerializer
+from .serializers import PredictionSerializer, MatchResultSerializer
 from rest_framework.viewsets import ViewSet
-from .models import Predictions
+from .models import Predictions, MatchResult
 from rest_framework import permissions, viewsets
 from match.permissions import IsOwnerOrReadOnly
 from rest_framework import filters
 
 # Create your views here.
+class MatchResultViewSet(viewsets.ModelViewSet):
+    queryset = MatchResult.objects.all()
+    serializer_class = MatchResultSerializer
+    permission_classes = [permissions.IsAuthenticated]  # only logged-in users
 
 class PredictionViewSet(viewsets.ModelViewSet):
     queryset = Predictions.objects.all()

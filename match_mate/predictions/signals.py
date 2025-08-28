@@ -1,7 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from match_mate.match.models import MatchResult
-from .models import Predictions
+from .models import MatchResult, Predictions
 
 
 @receiver(post_save, sender=MatchResult)
