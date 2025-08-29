@@ -35,8 +35,6 @@ def import_fixtures():
             away_team, _ = Team.objects.get_or_create(name=away_name, defaults={"league": league})
 
 
-            print(match["status"].lower())
-
             # ✅ Always update fixture if it already exists
             fixture, created = Fixtures.objects.update_or_create(
                 external_id=match["id"],  # use API's fixture ID

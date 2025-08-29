@@ -49,11 +49,11 @@ class FixtureViewSet(viewsets.ModelViewSet):
         
     #     return queryset.order_by('match_date_time')
 
-    # def list(self, request, *args, **kwargs):
-    #     '''Import fixtures before listing'''
-    #    
-    #     import_fixtures() #run via cron job
-    #     return super().list(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        '''Import fixtures before listing'''
+        print("Importing fixtures...")
+        import_fixtures() #run via cron job
+        return super().list(request, *args, **kwargs)
 
 # @api_view(["POST"])
 # @permission_classes([IsAuthenticated])
